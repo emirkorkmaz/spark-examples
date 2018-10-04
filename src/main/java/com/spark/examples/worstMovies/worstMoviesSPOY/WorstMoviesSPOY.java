@@ -22,7 +22,7 @@ public class WorstMoviesSPOY {
 
         Logger.getLogger("org").setLevel(Level.ERROR);
 
-        SparkConf sc = new SparkConf().setAppName("WorstMoviesSPOY").setMaster("yarn");
+        SparkConf sc = new SparkConf().setAppName("WorstMoviesSPOY");
         JavaSparkContext jsc = new JavaSparkContext(sc);
 
         JavaRDD<String> rawData = jsc.textFile("hdfs:///user/cloudera/ml100k/u.data");
