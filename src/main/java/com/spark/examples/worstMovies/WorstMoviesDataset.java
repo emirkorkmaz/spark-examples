@@ -34,7 +34,7 @@ public class WorstMoviesDataset {
 
         StructType moviesRatingStructType = DataTypes.createStructType(new StructField[] {
                 DataTypes.createStructField("userid", DataTypes.StringType, false, Metadata.empty()),
-                DataTypes.createStructField("itemid", DataTypes.StringType, false, Metadata.empty()),
+                DataTypes.createStructField("movieid", DataTypes.StringType, false, Metadata.empty()),
                 DataTypes.createStructField("rating", DataTypes.StringType, false, Metadata.empty()),
                 DataTypes.createStructField("timestamp", DataTypes.StringType, true, Metadata.empty())}
         );
@@ -42,11 +42,19 @@ public class WorstMoviesDataset {
         Dataset<Row> dataDS = ss.createDataFrame(data, moviesRatingStructType);
         Dataset<Row> fieldsOfDataCasted = dataDS.withColumn("rating", col("rating").cast("double"));
 
-        RelationalGroupedDataset dataGroupedByMovie = fieldsOfDataCasted.groupBy(col("itemid"));
-        Dataset<Row> worstHundredMovies = dataGroupedByMovie.agg(avg(col("rating")).as("avg_rating")).
-                orderBy(col("avg_rating").asc()).limit(100);
+        RelationalGroupedDataset dataGroupedByMovie = fieldsOfDataCasted.groupBy(col("movieid"));
+        Dataset<Row> worstHundredMovies = dataGroupedByMovie.
+                agg(avg(col("rating")).as("avg_rating"));
 
-        worstHundredMovies.write().csv("src/main/resources/output/worst100moviesByDS.text");
+        /** Exercise! Filter out the movies those have less than 10 ratings */
+        Dataset<Row> movieCount = dataGroupedByMovie.count();
+        Dataset<Row> filteredWorstMovies = worstHundredMovies.join(movieCount,"movieid").
+                filter(col("count").$greater(10)).select(col("movieid"), col("avg_rating")).
+                orderBy(col("avg_rating").asc()).limit(100);
+        /** Exercise! Filter out the movies those have less than 10 ratings */
+
+        filteredWorstMovies.show();
+        //worstHundredMovies.write().csv("src/main/resources/output/worst100moviesByDS.text");
 
         ss.close();
     }

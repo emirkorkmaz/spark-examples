@@ -37,11 +37,17 @@ public class WorstMovies {
         JavaPairRDD<String, Rating> moviesAndRatingsAggByMovieId = moviesAndRatings.
                 reduceByKey(WorstMovies::sumOfRatingsAndNumberOfRatings);
 
+
+        /** Exercise! Filter out the movies those have less than 10 ratings */
+        JavaPairRDD<String, Rating> filteredMoviesAndRatingsAggByMovieId = moviesAndRatingsAggByMovieId.
+                filter(movie -> movie._2.getRatingCount() > 10);
+        /** Exercise! Filter out the movies those have less than 10 ratings */
+
         //We are ready to calculate average rating of each movie
         //It is quite handy to use mapValues function
         //It will map each key in reduced RDD to value we'll be calculating
         //Output will be (movieID, averageRating)
-        JavaPairRDD<String, Double> moviesAndAvgRatings = moviesAndRatingsAggByMovieId.mapValues(movieRating ->
+        JavaPairRDD<String, Double> moviesAndAvgRatings = filteredMoviesAndRatingsAggByMovieId.mapValues(movieRating ->
                 movieRating.getRating()/movieRating.getRatingCount());
 
         //Finally sort movies by rating. In our tuple, rating is value and movie id is key
