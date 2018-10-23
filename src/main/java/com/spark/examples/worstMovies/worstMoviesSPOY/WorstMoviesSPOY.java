@@ -60,7 +60,7 @@ public class WorstMoviesSPOY {
 
     /**
      * Get each line from raw data and convert it to {@link Tuple2}
-     * @param line - 1st index is movie ID and 2nd index is Ration
+     * @param line - 1st index is movie ID and 2nd index is Rating
      * @return - MovieID and {@link Rating} as {@link Tuple2}
      */
     private static Tuple2<String, Rating> splitInfoAndMap(String line) {
