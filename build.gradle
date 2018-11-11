@@ -10,7 +10,6 @@ group 'spark-examples'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
@@ -18,18 +17,20 @@ repositories {
 dependencies {
     compile group: 'org.apache.spark', name: 'spark-core_2.10', version: '2.2.2'
     compile group: 'org.apache.spark', name: 'spark-sql_2.10', version: '2.2.2'
+    compile group: 'org.apache.spark', name: 'spark-yarn_2.10', version: '2.2.2'
+    compile group: 'com.datastax.spark', name: 'spark-cassandra-connector_2.10', version: '2.0.10'
 }
 
 jar {
     zip64 true
-    archiveName = "sparkexamples.jar"
+    archiveName = "worstMoviesDataset.jar"
     from {
         configurations.compile.collect {
             it.isDirectory() ? it : zipTree(it)
         }
     }
     manifest {
-        attributes 'Main-Class': 'com.spark.examples.worstMovies.worstMoviesSPOY'
+        attributes 'Main-Class': 'com.spark.examples.worstMovies.worstMoviesSPOY.WorstMoviesDatasetSPOY'
     }
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
